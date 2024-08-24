@@ -18,9 +18,42 @@ import initialEdges from './data/edges.js';
 import Sidebar from './components/dashboard/Sidebar.jsx';
 import ChildNode from './components/Nodes/parentChild/ChildNode.jsx';
 
-
 const rfStyle = {
   backgroundColor: '#f5f5f5',
+};
+
+// Function to clean up node data
+const cleanNodeData = (node) => {
+  if (!node || typeof node !== 'object') {
+    return {};
+  }
+
+  const { prototype, ...rest } = node;
+
+  // Safeguard to ensure data is an object
+  const data = rest.data && typeof rest.data === 'object' ? rest.data : {};
+
+  // Clean the data object to remove empty entries
+  const cleanedData = Object.fromEntries(
+    Object.entries(data).filter(([_, value]) => value != null && value !== '')
+  );
+
+  const cleanedNode = {
+    ...rest,
+    data: cleanedData,
+  };
+
+  // Recursively clean next_node if it exists
+  if (cleanedNode.next_node) {
+    cleanedNode.next_node = cleanNodeData(cleanedNode.next_node);
+  }
+
+  // Recursively clean childNode if it exists
+  if (cleanedNode.context && Array.isArray(cleanedNode.context.childNode)) {
+    cleanedNode.context.childNode = cleanedNode.context.childNode.map(cleanNodeData);
+  }
+
+  return cleanedNode;
 };
 
 function App() {
@@ -29,7 +62,7 @@ function App() {
   const reactFlowInstance = useRef(null);
 
   const transformedNodes = useMemo(() => {
-    return nodes.map((node) => ({
+    return nodes.map((node) => cleanNodeData({
       ...node,
       type: node.custom_type || node.type,
     }));
@@ -56,7 +89,7 @@ function App() {
     []
   );
 
-  const updateNodeTree = (nodes,sourceNode, sourceNodeId, targetNodeData) => {
+  const updateNodeTree = (nodes, sourceNode, sourceNodeId, targetNodeData) => {
     return nodes.map((node) => {
       if (node.id === sourceNodeId) {
         const isParentNode = sourceNode.type === 'parentNode';
@@ -72,7 +105,11 @@ function App() {
                     {
                       id: sourceNode.id,
                       title: sourceNode.label,
-                      
+                      next_node:{
+                        id:targetNodeData.id,
+                        
+
+                      }
                     },
                   ],
                 },
@@ -129,7 +166,7 @@ function App() {
         });
 
         setNodes(updatedNodes);
-        console.log('Updated Nodes after Edge Removal:', updatedNodes);
+        console.log('Updated Nodes after Edge Removal:', updatedNodes.map(({ data, ...rest }) => rest)); // Excluding data property
         return updatedEdges;
       });
     },
@@ -150,11 +187,11 @@ function App() {
           type: targetNode.custom_type || targetNode.type,
         };
 
-        const updatedNodes = updateNodeTree(nodes,sourceNode, sourceNodeId, targetNodeData);
+        const updatedNodes = updateNodeTree(nodes, sourceNode, sourceNodeId, targetNodeData);
 
         console.log('Source Node ID:', sourceNodeId);
         console.log('Target Node Data:', targetNodeData);
-        console.log('Updated Nodes Tree:', updatedNodes);
+        console.log('Updated Nodes Tree:', updatedNodes.map(({ data, ...rest }) => rest)); // Excluding data property
 
         setNodes(updatedNodes);
       }
