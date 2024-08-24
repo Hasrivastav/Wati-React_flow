@@ -1,15 +1,37 @@
-import  { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardHeader, CardContent, Avatar, IconButton, Typography, TextField, Box, Menu, MenuItem } from '@mui/material';
 import { red } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ReplyIcon from '@mui/icons-material/Reply';
 import ChildNode from './ChildNode';
+import { Handle } from 'reactflow';
 
-export default function ParentNode({ id, data, onDeleteNode, onCopyNode }) {
+export default function ParentNode({ id, data }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(data.default || "Click to edit me!");
+  const [text, setText] = useState("Click to edit me!");
   const [anchorEl, setAnchorEl] = useState(null);
   const textRef = useRef(null);
+
+  const handleStyleLeft = { left: -10 }; 
+  const handleStyleRight = { right: -10 };
+
+  
+
+  // Directly define child nodes data
+  const childrens = [
+    {
+      id: "I",
+      
+        label: 'Yes'
+      
+    },
+    {
+      id: "II",
+   
+        label: 'No'
+     
+    }
+  ];
 
   const handleTextClick = () => {
     setIsEditing(true);
@@ -32,12 +54,12 @@ export default function ParentNode({ id, data, onDeleteNode, onCopyNode }) {
   };
 
   const handleDelete = () => {
-    onDeleteNode(id);
+    data.onDeleteNode(id);
     handleMenuClose();
   };
 
   const handleCopy = () => {
-    onCopyNode(id);
+    data.onCopyNode(id);
     handleMenuClose();
   };
 
@@ -65,9 +87,9 @@ export default function ParentNode({ id, data, onDeleteNode, onCopyNode }) {
             </Menu>
           </>
         }
-        title={data.Title}
       />
       <CardContent>
+        <p>{id}</p>
         <Box mb={2}>
           {isEditing ? (
             <TextField
@@ -86,8 +108,8 @@ export default function ParentNode({ id, data, onDeleteNode, onCopyNode }) {
           )}
         </Box>
         <Box mt={2}>
-          {data.childrens?.map((node, index) => (
-            <ChildNode key={index} data={node.data} index={index} parentData={data} />
+          {childrens.map((node, index) => (
+            <ChildNode key={node.id} id={node.id} label={node.label} index={index} />
           ))}
         </Box>
       </CardContent>

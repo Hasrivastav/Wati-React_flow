@@ -5,7 +5,7 @@ import { Box, Button } from '@mui/material';
 const handleStyleLeft = { left: -10 }; 
 const handleStyleRight = { right: -10 };
 
-export default function ChildNode({ data, index }) {
+export default function ChildNode({ label, index }) {
   const onChange = useCallback((evt) => {
     console.log(evt.target.value);
   }, []);
@@ -14,6 +14,7 @@ export default function ChildNode({ data, index }) {
     <Box
       sx={{
         display: 'flex',
+        justifyContent:'center',
         alignItems: 'center',
         padding: '10px',
         border: '1px solid #ddd',
@@ -31,7 +32,7 @@ export default function ChildNode({ data, index }) {
       />
 
       <Button color="primary" onClick={onChange}>
-        {data.label || 'Child Node'}
+        {label || 'Child Node'}
       </Button>
 
       <Handle

@@ -1,19 +1,42 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Card, CardHeader, CardContent, IconButton, Typography, TextField, Box } from '@mui/material';
+import { Card, CardHeader, CardContent, IconButton, Typography, TextField, Box, Menu, MenuItem } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark'; 
-import { Handle, Position } from '@xyflow/react'; 
-
+import { Handle, Position } from '@xyflow/react';
 
 const handleStyleLeft = { left: -10 };
 const handleStyleRight = { right: -10 };
 
+
+
 function QuestionNode({ data }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(data.default ||"");
+  const [text, setText] = useState( "questionnode");
+  const [anchorEl, setAnchorEl] = useState(null);
   const textRef = useRef(null);
 
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDelete = () => {
+    if (data.onDeleteNode) {
+      data.onDeleteNode(data.id);  
+    }
+    handleMenuClose();
+  };
+
+  const handleCopy = () => {
+    if (data.onCopyNode) {
+      data.onCopyNode(data.id);  
+    }
+    handleMenuClose();
+  };
 
   const handleClickOutside = useCallback((event) => {
     if (textRef.current && !textRef.current.contains(event.target)) {
@@ -50,12 +73,21 @@ function QuestionNode({ data }) {
           </IconButton>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <>
+            <IconButton aria-label="settings" onClick={handleMenuClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleCopy}>Copy</MenuItem>
+              <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            </Menu>
+          </>
         }
-        title={data.Title}
-       
+        
       />
 
       <CardContent>
@@ -82,16 +114,18 @@ function QuestionNode({ data }) {
         type="target"
         position={Position.Left}
         style={handleStyleLeft}
-        id={`left-handle-${data}`} 
+         
       />
       
       <Handle
         type="source"
         position={Position.Right}
         style={handleStyleRight}
-        id={`right-handle-${data}`} 
+        
       />
     </Card>
+
+    
   );
 }
 

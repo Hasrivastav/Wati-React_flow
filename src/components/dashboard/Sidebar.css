@@ -1,0 +1,46 @@
+.sidebar {
+    width: 100%; /* Full width by default for small screens */
+    max-width: 300px; /* Maximum width for larger screens */
+    background-color: #f4f4f4;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+  
+  .card_p {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 20px;
+    width: 100%; /* Full width within the sidebar */
+    max-width: 250px; /* Maximum width for larger screens */
+    box-sizing: border-box;
+    cursor: pointer; /* Indicate that the card is clickable */
+    transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+  }
+  
+  .card_p:hover {
+    transform: scale(1.05); /* Slightly enlarge card on hover */
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .sidebar {
+      width: 30%; /* Sidebar takes up 30% of the width on medium screens */
+      max-width: 250;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .sidebar {
+      width: 25%; /* Sidebar takes up 25% of the width on larger screens */
+      max-width: 250;
+    }
+  }
+  
