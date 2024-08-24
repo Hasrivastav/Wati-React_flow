@@ -4,7 +4,7 @@ import { red } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ReplyIcon from '@mui/icons-material/Reply';
 
-export default function ParentNode({ id }) {
+export default function ParentNode({ id  }) {
   return (
     <Card sx={{
      
@@ -22,13 +22,17 @@ export default function ParentNode({ id }) {
       <CardContent>
        
         <Box >
-          <Typography  variant="body1">
+          <Typography   style={{ display:"flex",alignItems:"center",justifyContent:"center"}} variant="body1">
             Template
           </Typography>
         </Box>
         
-        <Box sx={{
+        <Box  style={{  }} sx={{
           gap: '8px',
+          display:"flex",
+        flexDirection:"column",
+        justifyContent:"center",
+        alignItems:"center"
           }}>
           <Button size="small" sx={{ width: '100%', maxWidth: '120px' }} color="primary">
             Yes
